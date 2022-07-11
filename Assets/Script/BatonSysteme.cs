@@ -9,7 +9,7 @@ public class BatonSysteme : NetworkBehaviour
 {
     enum Player {Player1 = 1, Player2};
     
-    [SyncVar]
+    [SyncVar(hook = nameof(SetBaton))]
     [SerializeField]
     private int _baton;
     
@@ -39,18 +39,17 @@ public class BatonSysteme : NetworkBehaviour
     [Server]
     public void RemoveBaton(int mbaton)
     {
-       
-            _baton -= mbaton;
-            if (GameOver())
-            {
-                GameEndAction();
-            }
-            else
-            {
-                ChangePlayer();
-                LogNewTurn();
-            }
-            
+        _baton -= mbaton;
+        if (GameOver())
+        {
+            GameEndAction();
+        }
+        else
+        {
+           ChangePlayer();
+           LogNewTurn();
+        }
+        
     }
 
     [ClientRpc]
@@ -60,8 +59,13 @@ public class BatonSysteme : NetworkBehaviour
         Debug.Log("C'est au player "+ _activePlayer + " de jouer " );
     }
 
-    [ClientRpc]
-    public void ShowBaton()
+    [ClientCallback]
+    private void Update()
+    {
+        ShowBaton();
+    }
+
+    void ShowBaton()
     {
         for (int i = 0; i < batons.Count; i++)
         {
@@ -93,7 +97,7 @@ public class BatonSysteme : NetworkBehaviour
     }
 
     [Server]
-    private void ChangePlayer()
+    public void ChangePlayer()
     {
         if (_activePlayer == Player.Player1)
         {
@@ -104,7 +108,10 @@ public class BatonSysteme : NetworkBehaviour
             _activePlayer = Player.Player1;
         }
     }
-    
-    
+
+    public void SetBaton(int baton, int newbaton)
+    {
+        _baton = newbaton;
+    }
 
 }

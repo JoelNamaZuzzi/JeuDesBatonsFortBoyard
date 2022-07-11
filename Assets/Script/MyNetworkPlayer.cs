@@ -9,7 +9,7 @@ public class MyNetworkPlayer : NetworkBehaviour
 {
     [SyncVar] [SerializeField] private string displayName = "No name";
 
-    [SerializeField] private int batonWanted = 1;
+    [SyncVar] [SerializeField] private int batonWanted = 1;
 
     #region Server
     
@@ -45,7 +45,7 @@ public class MyNetworkPlayer : NetworkBehaviour
         }
     }
 
-    [ClientCallback]
+    [Command]
     public void UpBatonWanted()
     {
         if (batonWanted < 3)
@@ -54,7 +54,7 @@ public class MyNetworkPlayer : NetworkBehaviour
         }
     }
 
-    [ClientCallback]
+    [Command]
     public void DownBatonWanted()
     {
         if (batonWanted > 1)
