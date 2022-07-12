@@ -4,9 +4,16 @@ using System.Collections.Generic;
 using Mirror;
 using UnityEngine;
 using UnityEngine.PlayerLoop;
+using UnityEngine.UI;
 
 public class MyNetworkPlayer : NetworkBehaviour
 {
+    
+    [SerializeField]
+    private Text yourTurnIndicator;
+
+    [SyncVar] [SerializeField] private int _playerId = 0;
+    
     [SyncVar] [SerializeField] private string displayName = "No name";
 
     [SyncVar] [SerializeField] private int batonWanted = 1;
@@ -18,10 +25,21 @@ public class MyNetworkPlayer : NetworkBehaviour
     {
         displayName = name;
     }
+    [Server]
+    public void SetPlayerId(int Id)
+    {
+        _playerId = Id;
+    }
 
     [Command]
     public void CmdRemoveBaton()
     {
+        if (_playerId != BatonSysteme.instance.GetActualPlayerId())
+        {
+            RcpPasTonTourLog();
+            return;
+        }
+        
         if (batonWanted >= 1 && batonWanted <= 3)
         {
             BatonSysteme.instance.RemoveBaton(batonWanted);
@@ -42,6 +60,21 @@ public class MyNetworkPlayer : NetworkBehaviour
         if (!hasAuthority)
         {
             transform.GetChild(0).gameObject.SetActive(false);
+        }
+    }
+
+    [ClientCallback]
+    private void Update()
+    {
+        if (!hasAuthority) return;
+
+        if (_playerId != BatonSysteme.instance.GetActualPlayerId())
+        {
+            yourTurnIndicator.gameObject.SetActive(false);
+        }
+        else
+        {
+            yourTurnIndicator.gameObject.SetActive(true);
         }
     }
 
@@ -70,4 +103,10 @@ public class MyNetworkPlayer : NetworkBehaviour
     }
 
     #endregion
+    
+    [TargetRpc]
+    public void RcpPasTonTourLog()
+    {
+        Debug.Log("ce n'est pas votre tour");
+    }
 }

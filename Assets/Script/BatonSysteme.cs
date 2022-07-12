@@ -7,9 +7,9 @@ using UnityEngine;
 
 public class BatonSysteme : NetworkBehaviour
 {
-    enum Player {Player1 = 1, Player2};
+    enum Player {Player1, Player2};
     
-    [SyncVar(hook = nameof(SetBaton))]
+    [SyncVar]
     [SerializeField]
     private int _baton;
     
@@ -36,6 +36,11 @@ public class BatonSysteme : NetworkBehaviour
         
     }
 
+    private void OnEnable()
+    {
+        SetStartingParameter();
+    }
+
     [Server]
     public void RemoveBaton(int mbaton)
     {
@@ -47,15 +52,15 @@ public class BatonSysteme : NetworkBehaviour
         else
         {
            ChangePlayer();
-           LogNewTurn();
+           LogNewTurn(_baton);
         }
         
     }
 
     [ClientRpc]
-    public void LogNewTurn()
+    public void LogNewTurn(int nbBaton)
     {
-        Debug.Log("Il reste "+_baton+" baton !");
+        Debug.Log("Il reste "+ nbBaton +" baton !");
         Debug.Log("C'est au player "+ _activePlayer + " de jouer " );
     }
 
@@ -109,9 +114,22 @@ public class BatonSysteme : NetworkBehaviour
         }
     }
 
-    public void SetBaton(int baton, int newbaton)
+    [Server]
+    public void SetStartingParameter()
     {
-        _baton = newbaton;
+        _baton = 21;
+        _activePlayer = Player.Player1;
     }
+
+    public int GetActualPlayerId()
+    {
+        if (_activePlayer == Player.Player1)
+        {
+            return 1;
+        }
+        
+        return 2;
+    }
+    
 
 }
