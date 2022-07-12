@@ -2009,7 +2009,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0.1
   _baton: 0
-  _activePlayer: 1
+  _activePlayer: 0
   batons:
   - {fileID: 258584944}
   - {fileID: 2074059287}
@@ -2383,7 +2383,7 @@ MonoBehaviour:
   onlineScene: 
   transport: {fileID: 1774868466}
   networkAddress: localhost
-  maxConnections: 100
+  maxConnections: 2
   authenticator: {fileID: 0}
   playerPrefab: {fileID: 8507050873926082967, guid: 5b0cf268084c97e48a5cbeb32227f5b6, type: 3}
   autoCreatePlayer: 1
