@@ -12,6 +12,11 @@ public class MyNetworkPlayer : NetworkBehaviour
     [SerializeField]
     private Text yourTurnIndicator;
 
+    [SerializeField] 
+    private GameObject winIndicator;
+    [SerializeField] 
+    private GameObject looseIndicator;
+
     [SyncVar] [SerializeField] private int _playerId = 0;
     
     [SyncVar] [SerializeField] private string displayName = "No name";
@@ -76,6 +81,27 @@ public class MyNetworkPlayer : NetworkBehaviour
         {
             yourTurnIndicator.gameObject.SetActive(true);
         }
+
+        if (GameOver())
+        {
+            if (_playerId != BatonSysteme.instance.GetActualPlayerId())
+            {
+                winIndicator.gameObject.SetActive(true);
+                looseIndicator.gameObject.SetActive(false);
+            }
+            else
+            {
+                looseIndicator.gameObject.SetActive(true);
+                winIndicator.gameObject.SetActive(false);
+            }
+        }
+        else
+        {
+            looseIndicator.gameObject.SetActive(false);
+            winIndicator.gameObject.SetActive(false);
+        }
+        
+        
     }
 
     [Command]
@@ -108,5 +134,11 @@ public class MyNetworkPlayer : NetworkBehaviour
     public void RcpPasTonTourLog()
     {
         Debug.Log("ce n'est pas votre tour");
+    }
+
+    
+    public bool GameOver()
+    {
+        return BatonSysteme.instance.GetNbBaton() <= 0;
     }
 }

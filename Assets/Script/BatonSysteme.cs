@@ -87,7 +87,7 @@ public class BatonSysteme : NetworkBehaviour
     [ClientRpc]
     public void GameEndAction()
     {
-        Debug.Log("Joueur "+ _activePlayer + " à perdu");
+        Debug.Log("Joueur " + _activePlayer + " à perdu");
     }
 
     [Server]
@@ -130,6 +130,10 @@ public class BatonSysteme : NetworkBehaviour
         
         return 2;
     }
-    
+
+    public int GetNbBaton()
+    {
+        return _baton;
+    }
 
 }
